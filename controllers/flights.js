@@ -30,9 +30,10 @@ function index(req, res) {
 }
 
 function show(req, res) {
-  Flight.findById(req.params.movieId)
-  .populate('Meal')
+  Flight.findById(req.params.flightId)
+  .populate('meals')
   .then(flight => {
+    console.log('****', flight)
     Meal.find({_id: {$nin: flight.meals}})
     .then(meals => {
       res.render('flights/show', {
@@ -105,7 +106,7 @@ function createTicket(req,res) {
 function addToMeals(req, res) {
   Flight.findById(req.params.flightId)
   .then(flight => {
-    flight.cast.push(req.body.mealsId)
+    flight.meals.push(req.body.mealId)
     flight.save()
 		.then(() => {
 		  res.redirect(`/flights/${flight._id}`)
